@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
     features = "src/test/resources/features",
     glue    = "co.com.petstore.stepdefinitions",
     plugin  = {"pretty"},
-    tags    = "@crud"
+    tags    = "@regresion"
 )
 public class UserCRUDRunner {
 }
