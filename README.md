@@ -48,6 +48,23 @@ flowchart LR
 
 ---
 
+## Diagrama Mermaid del flujo de escenarios probados
+
+```mermaid
+flowchart TD
+    INICIO([Inicio suite API User CRUD]) --> C[Crear usuario por POST]
+    C --> VC{Validar estado 200}
+    VC --> G[Consultar usuario por GET]
+    G --> VG{Validar identidad del usuario}
+    VG --> U[Actualizar usuario por PUT]
+    U --> VU{Validar}
+    VU --> D[Eliminar usuario por DELETE]
+    D --> VD{Validar }
+    VD --> FIN([Fin suite])
+```
+
+---
+
 ## Ejecución y reporte Serenity
 
 1. Verifica Java:
