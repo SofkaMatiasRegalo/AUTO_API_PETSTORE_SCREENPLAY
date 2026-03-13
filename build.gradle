@@ -1,0 +1,94 @@
+plugins {
+    id 'java'
+    id 'net.serenity-bdd.serenity-gradle-plugin' version '4.2.8'
+}
+
+group = 'co.com.petstore'
+version = '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'net.serenity-bdd:serenity-core:4.2.8'
+    implementation 'net.serenity-bdd:serenity-screenplay:4.2.8'
+    implementation 'net.serenity-bdd:serenity-screenplay-rest:4.2.8'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.3'
+
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    testImplementation 'net.serenity-bdd:serenity-cucumber:4.2.8'
+    testImplementation 'io.cucumber:cucumber-java:7.14.0'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.14.0'
+    testImplementation 'org.junit.platform:junit-platform-suite:1.10.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-suite-engine:1.10.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+    testRuntimeOnly 'org.slf4j:slf4j-simple:2.0.13'
+    testImplementation 'io.rest-assured:json-schema-validator:5.3.0'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+}
+
+tasks.register('openSerenityReport') {
+    dependsOn 'aggregate'
+    doLast {
+        def candidateReports = [
+            file("${projectDir}/target/site/serenity/index.html"),
+            file("${projectDir}/build/reports/serenity/index.html"),
+            file("${projectDir}/build/site/serenity/index.html"),
+            file("${projectDir}/build/test-results/timeline/index.html")
+        ]
+
+        def report = candidateReports.find { it.exists() }
+        if (report == null) {
+            println "No se encontro un reporte HTML. Ejecuta: gradle clean test aggregate"
+            return
+        }
+
+        println "Abriendo reporte: ${report.absolutePath}"
+
+        def os = System.getProperty('os.name').toLowerCase()
+        if (os.contains('win')) {
+            exec {
+                commandLine 'cmd', '/c', 'start', '', report.absolutePath
+            }
+        } else if (os.contains('mac')) {
+            exec {
+                commandLine 'open', report.absolutePath
+            }
+        } else {
+            exec {
+                commandLine 'xdg-open', report.absolutePath
+            }
+        }
+    }
+}
+
+tasks.register('testWithSerenityReport') {
+    dependsOn 'clean', 'test', 'aggregate', 'openSerenityReport'
+}
+
+tasks.register('serenityReport') {
+    group = 'verification'
+    description = 'Ejecuta pruebas, agrega resultados de Serenity y abre el reporte HTML.'
+    dependsOn 'testWithSerenityReport'
+}
+
+gradle.startParameter.continueOnFailure = true
