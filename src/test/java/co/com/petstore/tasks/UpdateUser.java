@@ -29,7 +29,7 @@ public class UpdateUser implements Task {
             Put.to(UserResources.USER_BY_USERNAME)
                 .with(request -> request
                     .contentType(Constantes.CONTENT_TYPE_JSON)
-                    .pathParam("username", username)
+                    .pathParam(Constantes.PATH_PARAM_USERNAME, username)
                     .body(updatedUser))
         );
     }

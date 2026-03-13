@@ -1,93 +1,93 @@
 # AUTO_API_PETSTORE_SCREENPLAY
 
-## Vista general de arquitectura
+Automatizacion API con patron Screenplay para el ciclo CRUD de usuarios en Swagger Petstore.
 
-Este proyecto está orientado a **automatización de pruebas API** con **Gradle + Java + Serenity BDD (Screenplay)**.  
-La arquitectura documentada abajo combina:
+## Stack
 
-1. **Arquitectura real del codebase de pruebas** (features, steps, tasks, questions, models, resources).
+- Java 11
+- Gradle
+- Serenity BDD + Screenplay
+- Cucumber (Gherkin)
+- Serenity Rest / Rest Assured
+- Lombok
 
----
-
-## Diagrama general (componentes + usuarios + base de datos)
+## Arquitectura actual
 
 ```mermaid
 flowchart LR
-    U[Usuario QA / CI] --> F[Features Gherkin]
-    F --> S[Step Definitions]
-    S --> T[Tasks Screenplay]
-    T --> Q[Questions/Assertions]
-    T --> R[Resources Endpoints]
-    T --> M[Models POJO]
-    T --> API[API Sistema Bajo Prueba]
-
+    F[Feature Gherkin] --> SD[Step Definitions]
+    SD --> TK[Tasks API]
+    SD --> QS[Questions]
+    TK --> RS[Resources]
+    SD --> UF[UserDataFactory]
+    SD --> UC[UserContext]
+    TK --> API[Petstore API]
 ```
 
----
+## Estructura principal
 
+```text
+src/test/java/co/com/petstore/
+|-- hooks/            # Setup y teardown del actor
+|-- models/           # POJOs de request/response
+|-- questions/        # Lectura y validacion de respuesta
+|-- runners/          # Runner JUnit Platform + Cucumber
+|-- stepdefinitions/  # Pasos Given/When/Then
+|-- tasks/            # Interacciones REST (POST/GET/PUT/DELETE)
+`-- utils/            # Constantes, recursos, contexto y fabrica de datos
 
-## Dependencias y frameworks clave
+src/test/resources/
+|-- features/         # Escenarios BDD
+`-- serenity.conf     # Configuracion Serenity y RestAssured
+```
 
-| Componente / Framework | Rol principal | Estado en este codebase |
-|---|---|---|
-| Gradle | Build, ejecución de pruebas y tareas (`test`, `aggregate`) | ✅ Detectado |
-| Java | Lenguaje base del proyecto | ✅ Detectado |
-| Serenity BDD | Reportería y ejecución bajo patrón Screenplay | ✅ Detectado |
-| Cucumber (Gherkin) | Definición BDD de escenarios | ✅ Detectado |
-| Rest Assured / SerenityRest | Interacción y validación de APIs REST | ✅ Esperado por arquitectura |
+## Refactor aplicado
 
----
+- Se encapsulo `UserContext` para evitar estado publico mutable.
+- Se agrego `UserDataFactory` para centralizar la construccion de usuarios base y actualizados.
+- Se eliminaron duplicaciones de validacion de status en Step Definitions.
+- Se unifico la key de path param `username` en una constante reutilizable.
+- Se mantuvo el flujo CRUD intacto con mejor legibilidad y mantenibilidad.
 
-## Flujo de ejecución (alto nivel)
-
-1. Se define comportamiento en **Gherkin**.
-2. `Step Definitions` traducen pasos a acciones reutilizables.
-3. `Tasks` ejecutan llamadas API (POST/GET/PUT/DELETE).
-4. `Questions` validan status code, payload y reglas esperadas.
-5. Serenity genera reporte consolidado (`gradle clean test aggregate`).
-
----
-
-## Diagrama Mermaid del flujo de escenarios probados
+## Flujo CRUD validado
 
 ```mermaid
 flowchart TD
-    INICIO([Inicio suite API User CRUD]) --> C[Crear usuario por POST]
-    C --> VC{Validar estado 200}
-    VC --> G[Consultar usuario por GET]
-    G --> VG{Validar identidad del usuario}
-    VG --> U[Actualizar usuario por PUT]
-    U --> VU{Validar}
-    VU --> D[Eliminar usuario por DELETE]
-    D --> VD{Validar }
-    VD --> FIN([Fin suite])
+    INICIO([Inicio]) --> C[POST crear usuario]
+    C --> G[GET consultar usuario]
+    G --> U[PUT actualizar usuario]
+    U --> V[GET validar cambios]
+    V --> D[DELETE eliminar usuario]
+    D --> F[GET confirmar 404]
 ```
 
----
+## Ejecucion
 
-## Ejecución y reporte Serenity
+1. Verificar Java:
 
-1. Verifica Java:
 ```bash
 java -version
 ```
 
-2. Genera pruebas + reporte:
+2. Ejecutar pruebas y consolidar reporte:
+
 ```bash
 ./gradlew clean test aggregate
 ```
 
-3. Abre el reporte:
+3. Ejecutar flujo completo y abrir reporte:
+
 ```bash
-./gradle serenityReport
+./gradlew serenityReport
 ```
 
-4. Alternativa rápida:
-- Windows:
+En Windows tambien puedes usar:
+
 ```bat
-open-serenity-report.bat
+gradlew.bat clean test aggregate
+gradlew.bat serenityReport
 ```
-- Git Bash:
-```bash
-bash ./open-serenity-report.sh
-```
+
+## Tag de ejecucion
+
+- El runner actual ejecuta escenarios con tag `@regresion`.

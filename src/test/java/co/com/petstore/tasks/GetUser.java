@@ -1,5 +1,6 @@
 package co.com.petstore.tasks;
 
+import co.com.petstore.utils.Constantes;
 import co.com.petstore.utils.UserResources;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
@@ -24,7 +25,7 @@ public class GetUser implements Task {
         actor.attemptsTo(
             Get.resource(UserResources.USER_BY_USERNAME)
                 .with(request -> request
-                    .pathParam("username", username))
+                    .pathParam(Constantes.PATH_PARAM_USERNAME, username))
         );
     }
 }

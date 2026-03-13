@@ -14,7 +14,9 @@ public class Constantes {
     public static final String USER_UPDATED_FIRST_NAME = "Updated";
     public static final String USER_UPDATED_EMAIL      = "updated.screenplay@petstore.qa";
     public static final String USER_UPDATED_PHONE      = "3009876543";
+    public static final String PATH_PARAM_USERNAME     = "username";
     public static final String JSON_PATH_USERNAME    = "username";
+    public static final String JSON_PATH_FIRST_NAME  = "firstName";
 
     private Constantes() { }
 }
