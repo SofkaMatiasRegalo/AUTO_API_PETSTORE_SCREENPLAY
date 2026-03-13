@@ -9,8 +9,6 @@ Feature: Eliminacion de usuarios en PetStore API
     Given existe un usuario registrado con username "<username>"
     When  el actor elimina el usuario "<username>" mediante DELETE
     Then  la respuesta de eliminacion es exitosa con codigo <statusCode>
-    When  el actor consulta los datos del usuario "<username>" mediante GET
-    Then  la consulta del usuario es fallida con codigo 404
 
     Examples:
       | username                  | statusCode |

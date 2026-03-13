@@ -9,11 +9,7 @@ import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeT
 
 public class DeleteUserStepDefinitions {
 
-    private final UserContext context;
-
-    public DeleteUserStepDefinitions(UserContext context) {
-        this.context = context;
-    }
+    private final UserContext context = UserContext.current();
 
     @When("el actor elimina el usuario {string} mediante DELETE")
     public void elActorEliminaElUsuario(String username) {

@@ -1,6 +1,7 @@
 package co.com.petstore.tasks;
 
 import co.com.petstore.models.User;
+import co.com.petstore.utils.Constantes;
 import co.com.petstore.utils.UserResources;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
@@ -25,7 +26,7 @@ public class CreateUser implements Task {
         actor.attemptsTo(
             Post.to(UserResources.USER_ENDPOINT)
                 .with(request -> request
-                    .contentType("application/json")
+                    .contentType(Constantes.CONTENT_TYPE_JSON)
                     .body(user))
         );
     }

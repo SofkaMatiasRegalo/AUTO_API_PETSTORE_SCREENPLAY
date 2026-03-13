@@ -1,6 +1,7 @@
 package co.com.petstore.tasks;
 
 import co.com.petstore.models.User;
+import co.com.petstore.utils.Constantes;
 import co.com.petstore.utils.UserResources;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
@@ -27,7 +28,7 @@ public class UpdateUser implements Task {
         actor.attemptsTo(
             Put.to(UserResources.USER_BY_USERNAME)
                 .with(request -> request
-                    .contentType("application/json")
+                    .contentType(Constantes.CONTENT_TYPE_JSON)
                     .pathParam("username", username)
                     .body(updatedUser))
         );

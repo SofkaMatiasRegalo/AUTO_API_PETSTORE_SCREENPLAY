@@ -9,11 +9,7 @@ import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeT
 
 public class CreateUserStepDefinitions {
 
-    private final UserContext context;
-
-    public CreateUserStepDefinitions(UserContext context) {
-        this.context = context;
-    }
+    private final UserContext context = UserContext.current();
 
     @When("el actor crea el usuario mediante POST")
     public void elActorCreaElUsuarioMediantePost() {

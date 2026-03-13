@@ -2,6 +2,7 @@ package co.com.petstore.stepdefinitions;
 
 import co.com.petstore.models.User;
 import co.com.petstore.tasks.UpdateUser;
+import co.com.petstore.utils.Constantes;
 import co.com.petstore.utils.UserContext;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -10,23 +11,19 @@ import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeT
 
 public class UpdateUserStepDefinitions {
 
-    private final UserContext context;
-
-    public UpdateUserStepDefinitions(UserContext context) {
-        this.context = context;
-    }
+    private final UserContext context = UserContext.current();
 
     @When("el actor actualiza la informacion del usuario {string} mediante PUT")
     public void elActorActualizaLaInformacionDelUsuario(String username) {
         User usuarioActualizado = User.builder()
             .id(context.usuario.getId())
             .username(username)
-            .firstName("Updated")
-            .lastName("Screenplay")
-            .email("updated.screenplay@petstore.qa")
+            .firstName(Constantes.USER_UPDATED_FIRST_NAME)
+            .lastName(Constantes.USER_LAST_NAME)
+            .email(Constantes.USER_UPDATED_EMAIL)
             .password(context.usuario.getPassword())
-            .phone("3009876543")
-            .userStatus(1)
+            .phone(Constantes.USER_UPDATED_PHONE)
+            .userStatus(Constantes.USER_STATUS_ACTIVE)
             .build();
         context.actor.attemptsTo(UpdateUser.withData(username, usuarioActualizado));
     }
